@@ -1,0 +1,509 @@
+/*!
+* jQuery SmartWizard v6.x
+* The awesome step wizard plugin for jQuery
+* http://www.techlaboratory.net/jquery-smartwizard
+*
+* Created by Dipu Raj (http://dipu.me)
+*
+* Licensed under the terms of the MIT License
+* https://github.com/techlab/jquery-smartwizard/blob/master/LICENSE
+*/
+/* Variables */
+/* Root */
+:root {
+    --sw-border-color: #eeeeee;
+    --sw-toolbar-btn-color: #ffffff;
+    --sw-toolbar-btn-background-color: #009EF7;
+    --sw-anchor-default-primary-color: #f8f9fa;
+    --sw-anchor-default-secondary-color: #b0b0b1;
+    --sw-anchor-active-primary-color: #0eacca;
+    --sw-anchor-active-secondary-color: #ffffff;
+    --sw-anchor-done-primary-color: #5cb85c;
+    --sw-anchor-done-secondary-color: #fefefe;
+    --sw-anchor-disabled-primary-color: #f8f9fa;
+    --sw-anchor-disabled-secondary-color: #dbe0e5;
+    --sw-anchor-error-primary-color: #dc3545;
+    --sw-anchor-error-secondary-color: #ffffff;
+    --sw-anchor-warning-primary-color: #ffc107;
+    --sw-anchor-warning-secondary-color: #ffffff;
+    --sw-progress-color: #0eacca;
+    --sw-progress-background-color: #f8f9fa;
+    --sw-loader-color: #5cb85c    ;
+    --sw-loader-background-color: #f8f9fa;
+    --sw-loader-background-wrapper-color: rgba(255, 255, 255, 0.7);
+}
+
+/* Base Styles */
+.sw {
+    position: relative;
+}
+
+.sw *,
+.sw *::before,
+.sw *::after {
+    box-sizing: border-box;
+}
+
+.sw > .tab-content {
+    position: relative;
+    overflow: hidden;
+}
+
+.sw > .tab-content > .tab-pane {
+    padding: 0.8rem;
+}
+
+.sw .toolbar {
+    padding: 0.8rem;
+    text-align: right;
+}
+
+.sw .toolbar > .sw-btn {
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
+    text-transform: none;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    margin-left: 0.2rem;
+    margin-right: 0.2rem;
+    cursor: pointer;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.25rem;
+    font-weight: 400;
+    color: var(--sw-toolbar-btn-color);
+    background-color: var(--sw-toolbar-btn-background-color);
+    border: 1px solid var(--sw-toolbar-btn-background-color);
+}
+
+.sw .toolbar > .sw-btn.disabled, .sw .toolbar > .sw-btn:disabled {
+    opacity: 0.65;
+}
+
+.sw[dir=rtl] > .toolbar {
+    text-align: left;
+}
+
+.sw > .navigation {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+@media screen and (max-width: 640px) {
+    .sw > .navigation {
+        flex-direction: column !important;
+        flex: 1 auto;
+    }
+}
+
+.sw > .navigation .navigation-link {
+    display: block;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+}
+
+.sw > .navigation .navigation-link:hover, .sw > .navigation .navigation-link:active, .sw > .navigation .navigation-link:focus {
+    text-decoration: none;
+}
+
+.sw > .navigation .navigation-link::-moz-focus-inner {
+    border: 0;
+}
+
+.sw > .navigation .navigation-link.disabled {
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.sw > .navigation .navigation-link.hidden {
+    display: none;
+    visibility: none;
+}
+
+.sw > .navigation .navigation-link > .num {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    float: left;
+    pointer-events: none;
+    height: 100%;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    border-radius: 10em;
+    text-align: center;
+    font-size: 2em;
+    font-weight: 800;
+    clear: both;
+    line-height: 1;
+    text-decoration: none;
+}
+
+.sw[dir=rtl] > .navigation .navigation-link > .num {
+    float: right;
+}
+
+.sw > .progress {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    width: 100%;
+    height: 5px;
+    background: var(--sw-progress-background-color);
+    overflow: hidden;
+}
+
+.sw > .progress > .progress-bar {
+    height: 5px;
+    width: 0%;
+    background-color: var(--sw-progress-color);
+    transition: width 0.5s ease-in-out;
+}
+
+.sw.sw-justified > .navigation > li, .sw.sw-justified > .navigation .navigation-link {
+    flex-basis: 0;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.sw.sw-loading {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+.sw.sw-loading::after {
+    content: "";
+    display: block;
+    position: absolute;
+    opacity: 1;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: var(--sw-loader-background-wrapper-color);
+    z-index: 2;
+}
+
+.sw.sw-loading::before {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 45%;
+    left: 45%;
+    width: 2rem;
+    height: 2rem;
+    border: 10px solid var(--sw-loader-color);
+    border-top: 10px solid var(--sw-loader-background-color);
+    border-radius: 50%;
+    z-index: 10;
+    -webkit-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+}
+
+@-webkit-keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Theme: Basic */
+.sw-theme-basic {
+    border: 1px solid var(--sw-border-color);
+}
+
+.sw-theme-basic > .navigation {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1) !important;
+}
+
+.sw-theme-basic > .navigation .navigation-link {
+    position: relative;
+    height: 100%;
+    min-height: 100%;
+    margin-right: 5px;
+}
+
+.sw-theme-basic > .navigation .navigation-link::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    height: 2px;
+    width: 0;
+    left: 0px;
+    bottom: -1px;
+    transition: all 0.35s ease 0.15s;
+    width: 100%;
+}
+
+.sw-theme-basic > .navigation .navigation-link.default {
+    color: var(--sw-anchor-default-secondary-color);
+    cursor: not-allowed;
+}
+
+.sw-theme-basic > .navigation .navigation-link.default::after {
+    background-color: var(--sw-anchor-default-secondary-color);
+}
+
+.sw-theme-basic > .navigation .navigation-link.active {
+    color: var(--sw-anchor-active-primary-color) !important;
+    cursor: pointer;
+}
+
+.sw-theme-basic > .navigation .navigation-link.active::after {
+    background: var(--sw-anchor-active-primary-color) !important;
+}
+
+.sw-theme-basic > .navigation .navigation-link.done {
+    color: var(--sw-anchor-done-primary-color);
+    cursor: pointer;
+}
+
+.sw-theme-basic > .navigation .navigation-link.done::after {
+    background: var(--sw-anchor-done-primary-color);
+}
+
+.sw-theme-basic > .navigation .navigation-link.disabled {
+    color: var(--sw-anchor-disabled-primary-color) !important;
+}
+
+.sw-theme-basic > .navigation .navigation-link.disabled::after {
+    background: var(--sw-anchor-disabled-primary-color);
+}
+
+.sw-theme-basic > .navigation .navigation-link.error {
+    color: var(--sw-anchor-error-primary-color) !important;
+    cursor: pointer;
+}
+
+.sw-theme-basic > .navigation .navigation-link.error::after {
+    background: var(--sw-anchor-error-primary-color) !important;
+}
+
+.sw-theme-basic > .navigation .navigation-link.warning {
+    color: var(--sw-anchor-warning-primary-color) !important;
+    cursor: pointer;
+}
+
+.sw-theme-basic > .navigation .navigation-link.warning::after {
+    background: var(--sw-anchor-warning-primary-color) !important;
+}
+
+
+/* Theme: Dots */
+.sw-theme-dots > .navigation {
+    position: relative;
+    margin-bottom: 1.7em;
+}
+
+.sw-theme-dots > .navigation::before {
+    content: " ";
+    position: absolute;
+    top: 18px;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background-color: var(--sw-border-color);
+    border-radius: 3px;
+    z-index: 1;
+}
+
+@media screen and (max-width: 640px) {
+    .sw-theme-dots > .navigation::before {
+        top: 0;
+        left: 20.5px;
+        width: 5px;
+        height: 100%;
+    }
+}
+
+@media screen and (max-width: 640px) {
+    .sw-theme-dots > .navigation .navigation-item:last-child .navigation-link {
+        margin-bottom: 0;
+    }
+}
+
+.sw-theme-dots > .navigation .navigation-link {
+    position: relative;
+    margin-top: 40px;
+}
+
+@media screen and (max-width: 640px) {
+    .sw-theme-dots > .navigation .navigation-link {
+        margin-top: unset;
+        margin-bottom: 20px;
+        padding-left: 55px;
+        text-align: left !important;
+    }
+}
+
+.sw-theme-dots > .navigation .navigation-link::after {
+    content: " ";
+    position: absolute;
+    display: block;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 50%;
+    top: -42px;
+    width: 46px;
+    height: 46px;
+    z-index: 99;
+    border: 8px solid var(--sw-border-color);
+    transition: all 0.5s ease-in-out;
+}
+
+@media screen and (max-width: 640px) {
+    .sw-theme-dots > .navigation .navigation-link::after {
+        top: 0;
+        right: unset;
+    }
+}
+
+.sw-theme-dots > .navigation .navigation-link > .num {
+    font-size: 1.5em;
+    position: absolute;
+    display: block;
+    left: 0;
+    right: 0;
+    top: -31px;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 100;
+    transition: all 0.5s ease-in-out;
+}
+
+@media screen and (max-width: 640px) {
+    .sw-theme-dots > .navigation .navigation-link > .num {
+        top: 0;
+        right: unset;
+        width: 46px;
+        padding-top: 10px;
+    }
+}
+
+.sw-theme-dots > .navigation .navigation-link.default {
+    color: var(--sw-anchor-default-secondary-color);
+    cursor: not-allowed;
+}
+
+.sw-theme-dots > .navigation .navigation-link.default > .num {
+    color: var(--sw-anchor-default-primary-color) !important;
+}
+
+.sw-theme-dots > .navigation .navigation-link.default::after {
+    background-color: var(--sw-anchor-default-secondary-color);
+}
+
+.sw-theme-dots > .navigation .navigation-link.active {
+    color: var(--sw-anchor-active-primary-color) !important;
+    cursor: pointer;
+}
+
+.sw-theme-dots > .navigation .navigation-link.active > .num {
+    color: var(--sw-anchor-active-secondary-color) !important;
+}
+
+.sw-theme-dots > .navigation .navigation-link.active::after {
+    background-color: var(--sw-anchor-active-primary-color) !important;
+    box-shadow: 0px 1px 7px 1px rgba(0, 0, 0, 0.3);
+}
+
+.sw-theme-dots > .navigation .navigation-link.done {
+    color: var(--sw-anchor-done-primary-color);
+    cursor: pointer;
+}
+
+.sw-theme-dots > .navigation .navigation-link.done > .num {
+    color: var(--sw-anchor-done-secondary-color) !important;
+}
+
+.sw-theme-dots > .navigation .navigation-link.done::after {
+    background-color: var(--sw-anchor-done-primary-color);
+}
+
+.sw-theme-dots > .navigation .navigation-link.disabled {
+    color: var(--sw-anchor-disabled-primary-color);
+}
+
+.sw-theme-dots > .navigation .navigation-link.disabled > .num {
+    color: var(--sw-anchor-disabled-secondary-color) !important;
+}
+
+.sw-theme-dots > .navigation .navigation-link.disabled::after {
+    background-color: var(--sw-anchor-disabled-primary-color);
+}
+
+.sw-theme-dots > .navigation .navigation-link.error {
+    color: var(--sw-anchor-error-primary-color) !important;
+    cursor: pointer;
+}
+
+.sw-theme-dots > .navigation .navigation-link.error > .num {
+    color: var(--sw-anchor-error-secondary-color) !important;
+}
+
+.sw-theme-dots > .navigation .navigation-link.error::after {
+    background-color: var(--sw-anchor-error-primary-color) !important;
+}
+
+.sw-theme-dots > .navigation .navigation-link.warning {
+    color: var(--sw-anchor-warning-primary-color) !important;
+    cursor: pointer;
+}
+
+.sw-theme-dots > .navigation .navigation-link.warning > .num {
+    color: var(--sw-anchor-warning-secondary-color) !important;
+}
+
+.sw-theme-dots > .navigation .navigation-link.warning::after {
+    background-color: var(--sw-anchor-warning-primary-color) !important;
+}
+
+.sw-theme-dots > .navigation-progress::after {
+    content: " ";
+    position: absolute;
+    top: 18px;
+    left: 0;
+    width: var(--sw-progress-width);
+    height: 5px;
+    background-color: var(--sw-progress-color);
+    border-radius: 3px;
+    z-index: 2;
+    transition: width 0.5s ease-in-out;
+}
+
+@media screen and (max-width: 640px) {
+    .sw-theme-dots > .navigation-progress::after {
+        top: 0;
+        left: 20.5px;
+        width: 5px;
+        height: var(--sw-progress-width);
+    }
+}
+
+.sw-theme-dots[dir=rtl] > .navigation-progress::after {
+    left: unset;
+    right: 0;
+}
+
+

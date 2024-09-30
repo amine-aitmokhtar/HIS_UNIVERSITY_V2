@@ -1,0 +1,67 @@
+#titre1 {
+    color: #0079b9;
+    font-weight: bold;
+    font-family: 'Open Sans', sans-serif;
+
+}
+
+h3, h4{
+    font-weight: bold;
+    color: #0eacca;
+}
+
+a{
+    text-decoration: none;
+    color: black;
+}
+.breadcrumb
+{
+
+    background-color: white;
+}
+
+label{
+    font-weight: bold;
+}
+.btn-success:hover {
+background: rgb(47, 214, 111);
+color: white;
+
+}
+.btn-success{
+width: 40%;
+background-color: #0eacca;
+}
+.btn-danger   {width: 40%;
+
+}
+.btn-danger:hover {
+background: crimson;
+color: white;
+}
+
+
+
+
+
+#accepter,
+#refuser,
+#reorienter {
+    color: white;
+    background-color: #0eacca !important;
+    border: white;
+    border-radius: 20px !important;
+    transition: all 0.2s ease-in-out;
+}
+
+#accepter:hover {
+    background-color: #0BDA51;
+}
+
+#refuser:hover {
+    background-color: red;
+}
+
+#reorienter:hover {
+    background-color: #FFA500;
+}
